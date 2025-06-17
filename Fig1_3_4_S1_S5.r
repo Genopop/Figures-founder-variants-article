@@ -220,7 +220,6 @@ figure_1_freq_Gnomad
 dev.off()
 
 ################################################################# Fig.4 ############################################################
-##### Figure Simon with CR > 1/1000 for SLSJ
 ## Select row I want
 
 CR_for_graph <- df_final[,c(1,2,6,9,14,17,22,25,18,19,10,11,26,27)]
@@ -228,21 +227,16 @@ CR_for_graph <- df_final[,c(1,2,6,9,14,17,22,25,18,19,10,11,26,27)]
 variants_to_freq <- c("chr6_26090951_C_G","chr5_126577145_T_C","chr14_94380925_T_A","chr4_102901325_AAC_A")
 CR_for_graph <- CR_for_graph[!CR_for_graph$SNP %in% variants_to_freq,]
 ## Select founder in SLSJ and UQc
-CR_for_graph$Founder_SAG <- ifelse(is.na(CR_for_graph$CR_Imput_SAG),
-								   CR_for_graph$founder_WGS_SAG,CR_for_graph$founder_Imput_SAG)
-CR_for_graph$Founder_RQ <- ifelse(is.na(CR_for_graph$CR_Imput_RQ),
-								  CR_for_graph$founder_WGS_RQ,CR_for_graph$founder_Imput_RQ)
-CR_for_graph$Founder_WQ <- ifelse(is.na(CR_for_graph$CR_Imput_WQ),
-								  CR_for_graph$founder_WGS_WQ,CR_for_graph$founder_Imput_WQ)
+CR_for_graph$Founder_SAG[!is.na(CR_for_graph$CR_Imput_SAG)] <- CR_for_graph$founder_Imput_SAG[!is.na(CR_for_graph$CR_Imput_SAG)]
+CR_for_graph$Founder_RQ[!is.na(CR_for_graph$CR_Imput_RQ)] <- CR_for_graph$founder_Imput_RQ[!is.na(CR_for_graph$CR_Imput_RQ)]
+CR_for_graph$Founder_WQ[!is.na(CR_for_graph$CR_Imput_WQ)] <- CR_for_graph$founder_Imput_WQ[!is.na(CR_for_graph$CR_Imput_WQ)]
 
 CR_for_graph <- CR_for_graph[CR_for_graph$Founder_SAG == "Founder" | CR_for_graph$Founder_RQ == "Founder"| CR_for_graph$Founder_WQ == "Founder",]
+CR_for_graph <- CR_for_graph[!is.na(CR_for_graph$SNP),]
 
-## Get CR (either imput or if missing)
-CR_for_graph$CR_SAG <- ifelse(is.na(CR_for_graph$CR_Imput_SAG),CR_for_graph$CR_WGS_SAG,CR_for_graph$CR_Imput_SAG)
-CR_for_graph$CR_RQ <- ifelse(is.na(CR_for_graph$CR_Imput_RQ),CR_for_graph$CR_WGS_RQ,CR_for_graph$CR_Imput_RQ)
-
-## Filter CR > 1/1000 in SLSJ
-CR_for_graph <- CR_for_graph[complete.cases(CR_for_graph$SNP),]
+## Only take imput
+CR_for_graph$CR_SAG <- CR_for_graph$CR_Imput_SAG[!is.na(CR_for_graph$CR_Imput_SAG)]
+CR_for_graph$CR_RQ <- CR_for_graph$CR_Imput_RQ[!is.na(CR_for_graph$CR_Imput_RQ)]
 
 CR_for_graph[is.na(CR_for_graph)] <- -1
 
@@ -276,6 +270,8 @@ frequency_df_sag$dataset <- "SAG"
 # Combine the frequency dataframes for UQc and SLSJ
 combined_frequency <- rbind(frequency_df_rq, frequency_df_sag)
 
+
+
 ########################## Enriched 
 ## Select row I want
 CR_for_graph_enriched <- df_final[,c(1,2,6,9,14,17,22,25,18,19,10,11)]
@@ -283,13 +279,11 @@ CR_for_graph_enriched <- df_final[,c(1,2,6,9,14,17,22,25,18,19,10,11)]
 variants_to_freq <- c("chr6_26090951_C_G","chr5_126577145_T_C","chr14_94380925_T_A","chr4_102901325_AAC_A")
 CR_for_graph_enriched <- CR_for_graph_enriched[!CR_for_graph_enriched$SNP %in% variants_to_freq,]
 
-## Get CR (either imput or if missing)
-CR_for_graph_enriched$CR_SAG <- ifelse(is.na(CR_for_graph_enriched$CR_Imput_SAG),CR_for_graph_enriched$CR_WGS_SAG,CR_for_graph_enriched$CR_Imput_SAG)
-CR_for_graph_enriched$CR_RQ <- ifelse(is.na(CR_for_graph_enriched$CR_Imput_RQ),CR_for_graph_enriched$CR_WGS_RQ,CR_for_graph_enriched$CR_Imput_RQ)
-
-## Filter CR > 1/1000 in SLSJ
-CR_for_graph_enriched <- CR_for_graph_enriched[complete.cases(CR_for_graph_enriched$SNP),]
-
+## Get CR ( imput only)
+CR_for_graph_enriched$CR_SAG[!is.na(CR_for_graph_enriched$CR_Imput_SAG)] <- CR_for_graph_enriched$CR_Imput_SAG[!is.na(CR_for_graph_enriched$CR_Imput_SAG)]
+CR_for_graph_enriched$CR_RQ[!is.na(CR_for_graph_enriched$CR_Imput_RQ)] <- CR_for_graph_enriched$CR_Imput_RQ[!is.na(CR_for_graph_enriched$CR_Imput_RQ)]
+## Only take imput variants
+CR_for_graph_enriched <- CR_for_graph_enriched[!is.na(CR_for_graph_enriched$CR_SAG) | !is.na(CR_for_graph_enriched$CR_RQ),]
 CR_for_graph_enriched[is.na(CR_for_graph_enriched)] <- -1
 
 # Create bins with intervals of 20 for UQc
