@@ -18,7 +18,7 @@ library("ggpubr")
 library(stringr)
 
 
-## umap ## WGS ## Fig suppl 3
+## umap ## WGS ## Fig suppl 2
 
 
 cag_regions_file <- 'region_cartagene.30k.txt'
@@ -107,7 +107,7 @@ ggarrange(p1, p,as_ggplot(legend1),as_ggplot(legend), ncol = 2, nrow = 2,labels 
 dev.off()
 
 
-### Imputations on CaG clusters #### Fig suppl 4
+### Imputations on CaG clusters #### Fig suppl 3
 setwd('imputation/PCA')
 
 my_file <- 'CaG_imputed_allchips.INFO0.3.maf0.05_pruned50_5_0.2'
