@@ -21,12 +21,12 @@ variants_enriched <- read.table("comparison_WGS_Imput_Gnomad_all_variants_enrich
 variants_enriched <- variants_enriched[,2]
 
 ## Remove variants with frequencies greater than 5%
-variants_frq_df <- read.table("variants_frq_file.frq", header=TRUE)
+variants_frq_df <- read.table("mymerged_all_chr_Imput_VTA_WQ.frq", header=TRUE)
 variants_to_freq <- variants_frq_df$SNP[variants_frq_df$MAF>0.05]
 variants_enriched <- variants_enriched[!variants_enriched %in% variants_to_freq]
 
 ## Remove unreliable imputed
-NR_var <- read.table("false_positive_snps.txt")
+NR_var <- read.table("ImputClaudia_1729WGSCaG_false_positive_snps.txt")
 NR_var$V1 <- gsub('_',':',NR_var$V1)
 
 ## SNPs not in WGS
@@ -37,7 +37,7 @@ variants_enriched <- variants_enriched[!variants_enriched %in% NR_var$V1]
 variants_included <- variants_enriched[!variants_enriched %in% snps_not_in_wgs$V1]
 
 ## Remove variants with one star classification except known variants (for subplot)
-toremove <- read.table("snps_clinvar_1star.txt", header = FALSE)
+toremove <- read.table("1302_snps_clinvar_1star.txt", header = FALSE)
 toremove$V1 <- gsub("_", ":", toremove$V1)
 known_tokeep <- read.table("known_founder_variants_in4reviews.txt", header = FALSE)
 toremove <- toremove[!toremove$V1 %in% known_tokeep$V1,]
@@ -48,7 +48,7 @@ variants_included_2stars <- variants_included[!variants_included %in% toremove$t
 ## Open file with the individuals in SLSJ
 individual_file_SLSJ <- read.table(paste0('CaG_Imput_VTA_SAG_enriched_in_WQ_chr_1.tfam'))
 ## Read SLSJ carrier file (SNP; carrier)
-carriers_df <- read.table("carriers_Imput_VTA_SAG.txt", header = TRUE, sep = ";", check.names = FALSE, stringsAsFactors = FALSE)
+carriers_df <- read.table("carriers_mymerged_all_chr_Imput_VTA_SAG.txt", header = TRUE, sep = ";", check.names = FALSE, stringsAsFactors = FALSE)
 carriers_df$variant <- sub("([A-Z])\\d+$", "\\1", carriers_df$variant)
 carriers_df[,1] <- gsub('\\.', "_", carriers_df[,1])
 
@@ -76,7 +76,7 @@ hist_like_df_2stars <- table(ind_num_var_df_2stars$Freq)
 ## Open file with individuals in UQc
 individual_file_RQ <- read.table(paste0('CaG_Imput_VTA_RQ_enriched_in_WQ_chr_1.tfam'))
 ## Read UQc carrier file (SNP; carrier)
-carriers_rq_df <- read.table("carriers_Imput_VTA_RQ.txt", header = TRUE, sep = ";")
+carriers_rq_df <- read.table("carriers_mymerged_all_chr_Imput_VTA_RQ.txt", header = TRUE, sep = ";")
 carriers_rq_df$variant <- sub("([A-Z])\\d+$", "\\1", carriers_rq_df$variant)
 carriers_rq_df[,1] <- gsub('\\.', "_", carriers_rq_df[,1])
 
